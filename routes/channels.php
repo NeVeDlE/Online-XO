@@ -8,7 +8,13 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 Broadcast::channel('lobby', function ($user) {
     return $user !== null; // Allow all authenticated users
 });
-
+Broadcast::channel('game.{id}', function ($user, $id) {
+    return \App\Models\Game::where('id', $id)
+        ->where(function ($query) use ($user) {
+            $query->where('player_one_id', $user->id)
+                ->orWhere('player_two_id', $user->id);
+        })->exists(); // Only allow players in the game
+});
 Broadcast::channel('games.{id}', function ($user, $id) {
     return \App\Models\Game::where('id', $id)
         ->where(function ($query) use ($user) {

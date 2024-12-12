@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->foreignId('player_one_id')->constrained()->references('id')->on('users')->cascadeOnDelete();
             $table->foreignId('player_two_id')->nullable()->constrained()->references('id')->on('users')->cascadeOnDelete();
             $table->integer('player_turn')->default(1);
-            $table->foreignId('winner_id')->nullable()->constrained()->references('id')->on('users')->cascadeOnDelete();
+            $table->foreignId('winner_id')->nullable();
             $table->json('state')->nullable();
             $table->timestamps();
         });

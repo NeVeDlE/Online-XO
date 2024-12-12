@@ -14,9 +14,5 @@ Route::middleware(['auth'])->group(function () {
         ->name('profile');
 });
 
-Route::get('/broadcast-test', function () {
-    event(new \App\Events\TestEvent('This is a test broadcast!'));
-    return 'Broadcast event dispatched';
-});
 
 require __DIR__ . '/auth.php';

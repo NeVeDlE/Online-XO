@@ -22,19 +22,20 @@
     </ul>
 
     {{ $games->links() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Echo.private('lobby')
+                .listen('GameCreated', (event) => {
 
+                    console.log('Game created:',event.game);
+                    Livewire.dispatch('refreshGames'); // Refresh game list
+                })
+                .listen('GameJoined', (event) => {
+                    console.log('Game joined:',event.game);
+                    Livewire.dispatch('refreshGames'); // Refresh game list
+                });
+        });
+
+    </script>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        Echo.private('lobby')
-            .listen('GameCreated', (event) => {
-                console.log('Game created:', event.game);
-                Livewire.emit('refreshGames'); // Refresh game list
-            })
-            .listen('GameJoined', (event) => {
-                console.log('Game joined:', event.game);
-                Livewire.emit('refreshGames'); // Refresh game list
-            });
-    });
 
-</script>

@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Events\GameUpdated;
 use App\Models\Game;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -12,7 +13,13 @@ class GameShow extends Component
     public $game;
     public $state;
     public $message;
+    protected $listeners = ['refreshGame'];
 
+    public function refreshGame(): void
+    {
+        $this->game->refresh();
+        $this->state = $this->game->state; // Refresh the game state
+    }
     public function mount(Game $game)
     {
         $this->game = $game;
@@ -21,6 +28,7 @@ class GameShow extends Component
 
     public function makeMove($index, $userId)
     {
+        $this->game->refresh();
         $this->winner();
         if ($this->state[$index] !== 0) {
             return; // Prevent overwriting a move
@@ -38,6 +46,9 @@ class GameShow extends Component
             $this->game->player_turn = $this->game->player_turn == -1 ? 1 : -1;
             $this->game->update(['state' => $this->state,
                 'player_turn' => $this->game->player_turn,]);
+            broadcast(new GameUpdated($this->game))->toOthers(); // Broadcast game update
+            $this->game->refresh();
+
         } else {
             $this->message = "It's not " . Auth::user()->name . "'s turn";
         }
@@ -51,6 +62,9 @@ class GameShow extends Component
         $this->verticalWin($arr);
         $this->diagonalWin($arr);
         $this->deadCase($arr);
+        if(isset($this->game->winner_id)){
+            broadcast(new GameUpdated($this->game))->toOthers(); // Broadcast game update
+        }
     }
 
 
@@ -104,6 +118,7 @@ class GameShow extends Component
                 if($arr[$row][$col]==0)return false;
             }
         }
+        $this->message="Dead Case";
         $this->game->winner_id = 0;
         $this->game->save();
         return true;

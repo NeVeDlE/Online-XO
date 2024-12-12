@@ -36,5 +36,19 @@
             <p>Winner is: {{ $this->game->winner->name}}</p>
         </div>
         @endif
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        Echo.private(`game.${@json($game->id)}`)
+            .listen('GameUpdated', (event) => {
+                console.log('Game updated:', event.game);
+                Livewire.dispatch('refreshGame'); // Trigger Livewire component refresh
+            })
+            .listen('GameJoined', (event) => {
+                console.log('Game joined:',event.game);
+                Livewire.dispatch('refreshGame'); // Refresh game list
+            });
 
+    });
+
+</script>
 </div>
