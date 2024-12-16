@@ -7,6 +7,7 @@ services:
         working_dir: /var/www/html
         volumes:
             - .:/var/www/html
+            - /var/www/html/node_modules  # Prevent overwriting node_modules
         environment:
             - APP_ENV=local
             - APP_DEBUG=true
@@ -17,6 +18,7 @@ services:
             - DB_PASSWORD=root
         depends_on:
             - db
+        entrypoint: ["sh", "./docker-entrypoint.sh"]  # Custom entrypoint
 
     nginx:
         image: nginx:latest
