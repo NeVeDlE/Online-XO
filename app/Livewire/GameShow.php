@@ -28,7 +28,6 @@ class GameShow extends Component
 
     public function makeMove($index, $userId)
     {
-        $this->game->refresh();
         $this->winner();
         if ($this->state[$index] !== 0) {
             return; // Prevent overwriting a move

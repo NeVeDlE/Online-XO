@@ -33,7 +33,11 @@
         </div>
         @else
         <div class="mt-4 pt-2">
-            <p>Winner is: {{ $this->game->winner->name}}</p>
+            @if($this->game->winner_id!=0)
+            <p>Winner is: {{ $this->game?->winner->name}}</p>
+            @else
+                <p>Dead Case There's no Winner</p>
+            @endif
         </div>
         @endif
 <script>
