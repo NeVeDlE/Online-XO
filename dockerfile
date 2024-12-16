@@ -1,8 +1,10 @@
 FROM php:8.2-fpm-alpine
 
-# Install required packages, Node.js, and npm
+# Install required packages and PHP extensions
 RUN apk add --no-cache bash mysql-client libpng-dev libjpeg-turbo-dev libwebp-dev \
-    freetype-dev nodejs npm curl git
+    freetype-dev nodejs npm curl git icu-dev libxml2-dev
+
+RUN docker-php-ext-install pdo pdo_mysql mysqli
 
 # Set working directory
 WORKDIR /var/www/html
