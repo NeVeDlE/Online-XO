@@ -1,32 +1,26 @@
-# Use the official PHP image with FPM (Alpine for minimal size)
 FROM php:8.2-fpm-alpine
 
-# Set the working directory
-WORKDIR /var/www/html
+# Install required packages, Node.js, and npm
+RUN apk add --no-cache bash mysql-client libpng-dev libjpeg-turbo-dev libwebp-dev \
+    freetype-dev nodejs npm curl git
 
-# Install system dependencies and required PHP extensions
-RUN apk add --no-cache \
-    bash \
-    mysql-client \
-    libpng-dev \
-    libjpeg-turbo-dev \
-    libzip-dev \
-    && docker-php-ext-install pdo_mysql zip gd
+# Set working directory
+WORKDIR /var/www/html
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy the Laravel project files
-COPY . /var/www/html
+# Copy application
+COPY . .
 
-# Set appropriate permissions for storage and cache directories
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Install dependencies without dev dependencies for production
+# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Expose port 9000 for PHP-FPM
-EXPOSE 9000
+# Install Node.js dependencies and build assets
+RUN npm install && npm run build
 
-# Start PHP-FPM
+# Permissions
+RUN chown -R www-data:www-data /var/www/html
+
+EXPOSE 9000
 CMD ["php-fpm"]
