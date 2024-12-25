@@ -86,4 +86,10 @@
             </main>
         </div>
     </body>
+<script>
+    window.Echo.channel('test-channel') // Replace 'test-channel' with your actual channel
+        .listen('.test-event', (e) => {
+            console.log('Event received:', e.message);
+        });
+</script>
 </html>

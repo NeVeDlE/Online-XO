@@ -15,4 +15,9 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
+Route::get('/test-broadcast', function () {
+    broadcast(new \App\Events\TestEvent('Hello from the backend!'));
+    return 'Broadcast sent!';
+});
+
 require __DIR__ . '/auth.php';
